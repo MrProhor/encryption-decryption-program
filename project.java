@@ -11,35 +11,37 @@ public class project {
         char[] key;
         int i = 0;
         int j = 0;
-        int k = 0;
+        int a = 0;
         while (i == 0) {
             System.out.print("\nВведите сообщение для дешифровки: ");
             inputText = scan.nextLine();
-            text = new char[inputText.length()];
-            textInt = new int[inputText.length()];
             arr = inputText.toCharArray();
             for (i = 0; i < inputText.length(); i++) {
+                if (arr[i] == ' ') {
+                    a++;
+                }
+            }
+            text = new char[a + 1];
+            textInt = new int[a + 1];
+            for (i = 0; i < inputText.length(); i++) {
                 if (arr[i] != ' ') {
-                    textInt[j] = (int) (textInt[j]*10 + arr[i]*Math.pow(10, k));
-                    k++;
+                    textInt[j] = textInt[j] * 10 + arr[i] - 48;
                 } else {
                     text[j] = (char) textInt[j];
                     j++;
-                    k = 0;
                 }
             }
-            //System.out.println(textInt);
-            //System.out.println(Arrays.toString(textInt));
-            //System.out.print(text);
-            //System.out.print("Введите ключ: ");
+            System.out.print("Введите ключ: ");
             inputKey = scan.nextLine();
             key = inputKey.toCharArray();
-            if (inputText.length() != (inputKey.length())) {
-                System.out.println("\n\nОШИБКА! Введена последовательность неверной длинны!\nДлинна ключа отличается от введённого сообщения на " + (inputKey.length() - text.length) + "\n");
+            if (textInt.length != inputKey.length()) {
+                System.out.println("\n\nОШИБКА! Введена последовательность неверной длинны ИЛИ последовательность введена неправильно!\nДлинна ключа отличается от введённого сообщения на " + (inputKey.length() - textInt.length) + "\n");
             } else {
                 System.out.print("Ваше зашифрованное сообщение: ");
-                for (i = 0; i < text.length; i = i + 2) {
-                    System.out.print(text[i] ^ key[i]);
+                for (i = 0; i < text.length; i++) {
+                    System.out.println(text[i]);
+                    System.out.println(key[i]);
+                    System.out.print((char) (text[i] ^ key[i]));
                 }
                 i = 1;
             }
@@ -72,7 +74,6 @@ public class project {
         String input = scan.nextLine();
         char[] text = input.toCharArray();
         char[] key;
-        int[] output = new int[input.length()];
         int i = 0;
         while (i != 1) {
             System.out.print("\nВведите '\\rand', чтобы получить случайный ключ ИЛИ введите свой ключ для зашифровки.\nЭто может быть любая последовательность латинских букв, знаков препинания и цифр, длинной " + input.length() + ": ");
@@ -86,8 +87,7 @@ public class project {
                 System.out.println("\nВаш сгенерированный ключ: " + new String(key));
                 System.out.print("Ваше зашифрованное сообщение: ");
                 for (i = 0; i < text.length; i++) {
-                    output[i] = text[i] ^ key[i];
-                    System.out.print(output[i]);
+                    System.out.print((text[i] ^ key[i]) + " ");
                 }
                 i = 1;
             }
