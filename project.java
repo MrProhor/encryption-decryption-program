@@ -1,3 +1,5 @@
+import java.io.*;
+import java.util.Objects;
 import java.util.Scanner;
 
 public class project {
@@ -68,7 +70,7 @@ public class project {
         return keyArr;
     }
 
-    public static void encryption() {
+    public static void encryption() throws IOException {
         Scanner scan = new Scanner(System.in);
         System.out.print("\nВведите сообщение для зашифровки: ");
         String input = scan.nextLine();
@@ -76,7 +78,7 @@ public class project {
         char[] key;
         int i = 0;
         while (i != 1) {
-            System.out.print("\nВведите '\\rand', чтобы получить случайный ключ ИЛИ введите свой ключ для зашифровки.\nЭто может быть любая последовательность латинских букв, знаков препинания и цифр, длинной " + input.length() + ": ");
+            System.out.print("Введите '\\rand', чтобы получить случайный ключ ИЛИ введите свой ключ для зашифровки.\nЭто может быть любая последовательность латинских букв, знаков препинания и цифр, длинной " + input.length() + ": ");
             key = scan.nextLine().toCharArray();
             if (key.length == 5 && key[0] == '\\' && key[1] == 'r' && key[2] == 'a' && key[3] == 'n' && key[4] == 'd') {
                 key = randomKey(input.length());
@@ -84,51 +86,48 @@ public class project {
             if (input.length() != key.length) {
                 System.out.println("\n\nОШИБКА! Неправильная команда или введена последовательность неверной длинны!\nДлинна ключа отличается от введённого сообщения на " + (key.length - input.length()));
             } else {
-                System.out.println("\nВаш сгенерированный ключ: " + new String(key));
+                System.out.println("\nВаш ключ: " + new String(key));
+                File file = new File("result\\NewEncDecFile123.txt");
+                FileWriter writer = new FileWriter(file);
                 System.out.print("Ваше зашифрованное сообщение: ");
+                writer.write("Ключ: ");
+                for (i = 0; i < key.length; i++) {
+                    writer.write(key[i]);
+                }
+                writer.write("\nСообщение: ");
                 for (i = 0; i < text.length; i++) {
+                    writer.write((text[i] ^ key[i]) + " ");
                     System.out.print((text[i] ^ key[i]) + " ");
                 }
+                writer.close();
                 i = 1;
             }
         }
-        /*
-
-        Вероятная часть кода с созданием файла
-
-        while (i == 1) {
-            System.out.print("\n\nЖелаете сохранить файл с зашифрованным сообщением и ключом?\nВведите 'Да' или 'Нет': ");
-            input = scan.nextLine();
-            if (!Objects.equals(input, "Да") & !Objects.equals(input, "Нет") & !Objects.equals(input, "да") & !Objects.equals(input, "нет") & !Objects.equals(input, "Yes") & !Objects.equals(input, "No") & !Objects.equals(input, "yes") & !Objects.equals(input, "no")) {
-                System.out.print("\nОШИБКА! Неправильная команда. Попробуйте ввести команду ещё раз...");
-            } else {
-                if (input.equals("Да") | input.equals("да") | input.equals("Yes") | input.equals("yes")) {
-                    String name;
-                    String line1 = ("Сообщение: " + text);
-                    String line2 = ("Ключ: " + key);
+        System.out.print("\n\nЖелаете сохранить файл с зашифрованным сообщением и ключом?\nВведите 'Yes' или 'No': ");
+        input = scan.nextLine();
+        if (!Objects.equals(input, "Да") & !Objects.equals(input, "Нет") & !Objects.equals(input, "да") & !Objects.equals(input, "нет") & !Objects.equals(input, "Yes") & !Objects.equals(input, "No") & !Objects.equals(input, "yes") & !Objects.equals(input, "no")) {
+            System.out.print("\nОШИБКА! Неправильная команда.\n\nПопробуйте ввести команду ещё раз: ");
+        } else {
+            if (input.equals("Да") | input.equals("да") | input.equals("Yes") | input.equals("yes")) {
+                while (i == 1) {
                     System.out.print("Введите название файла: ");
-                    name = scan.nextLine();
-                    try {
-                        FileOutputStream f = new FileOutputStream("D:\\" + name + ".txt");
-                        f.write(line1.getBytes());
-                        f.write(Integer.parseInt("\n"));
-                        f.write(line2.getBytes());
-                        f.flush();
-                        f.close();
-                    } catch (FileNotFoundException e) {
-                        e.printStackTrace();
-                    } catch (IOException e) {
-                        e.printStackTrace();
+                    String name = scan.nextLine();
+                    File file = new File("result\\NewEncDecFile123.txt");
+                    File newFile = new File("result\\" + name + ".txt");
+                    if (file.renameTo(newFile)) {
+                        i = 0;
+                        System.out.print("Файл успешно создан в папке 'result' в корневом каталоге");
+                    } else {
+                        System.out.println("\nОШИБКА! Файл с таким названием уже создан! Попробуйте ввести новое имя");
                     }
-                    i = -1;
-                } else {
-                    System.out.print("\nСоздание файла отменено...");
                 }
+            } else {
+                System.out.print("\nФайл не был создан");
             }
-        }*/
+        }
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         Scanner scan = new Scanner(System.in);
         String freeInput;
         int i = 0;
