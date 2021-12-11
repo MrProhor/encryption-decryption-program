@@ -87,7 +87,7 @@ public class project {
                 System.out.println("\n\nОШИБКА! Неправильная команда или введена последовательность неверной длинны!\nДлинна ключа отличается от введённого сообщения на " + (key.length - input.length()));
             } else {
                 System.out.println("\nВаш ключ: " + new String(key));
-                File file = new File("result\\empty.txt");
+                File file = new File("result\\NewEncDecFile123.txt");
                 FileWriter writer = new FileWriter(file);
                 System.out.print("Ваше зашифрованное сообщение: ");
                 writer.write("Ключ: ");
@@ -112,7 +112,7 @@ public class project {
                 while (i == 1) {
                     System.out.print("Введите название файла: ");
                     String name = scan.nextLine();
-                    File file = new File("result\\empty.txt");
+                    File file = new File("result\\NewEncDecFile123.txt");
                     File newFile = new File("result\\" + name + ".txt");
                     if (file.renameTo(newFile)) {
                         i = 0;
