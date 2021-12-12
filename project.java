@@ -1,22 +1,74 @@
 import java.io.*;
+import java.util.Arrays;
 import java.util.Objects;
 import java.util.Scanner;
 
 public class project {
 
-    public static void decryption() {
+    public static void decryptionRead() {
+        int i = 1;
+        char[] fileKey,
+                fileText;
+        while (i == 1) {
+            Scanner scan = new Scanner(System.in);
+            System.out.println("\nВведите имя файла из предложенного ниже списка: ");
+            File dir = new File("results");
+            for (File file : dir.listFiles()) {
+                System.out.println(file.getName());
+            }
+            System.out.println("Примечание: Если Вы не видите свой файл в списке, проверьте, находится ли он в папке 'results' в корневом каталоге");
+            System.out.print("Введите название файла: ");
+            String name = scan.nextLine();
+            File file = new File("results\\" + name + ".txt");
+            if (!file.exists()) {
+                System.out.println("\nОШИБКА! Файла с таким именем не существует!\nПроверьте имя файла или перенесите свой в папку 'results' в корневом каталоге");
+            } else {
+                i = 0;
+                try (FileReader reader = new FileReader("results\\" + name + ".txt");
+                     BufferedReader br = new BufferedReader(reader)) {
+                    String line;
+                    line = br.readLine();
+                    fileKey = line.toCharArray();
+                    line = br.readLine();
+                    fileText = line.toCharArray();
+                    int[] textInt = new int[fileKey.length];
+                    char[] textChar = new char[fileKey.length];
+                    int j = 0;
+                    for (i = 11; i < fileText.length; i++) {
+                        if (fileText[i] != ' ') {
+                            textInt[j] = textInt[j] * 10 + fileText[i] - 48;
+                        } else {
+                            textChar[j] = (char) textInt[j];
+                            j++;
+                        }
+                    }
+                    System.out.println("\n" + Arrays.toString(fileKey));
+                    System.out.println(fileText);
+                    System.out.print("Дешифрованное сообщение: ");
+                    for (j = 6; j < fileKey.length; j++) {
+                        System.out.print((char) (fileKey[j] ^ textChar[j - 6]));
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    public static void decryptionManually() {
         Scanner scan = new Scanner(System.in);
-        String inputText, inputKey;
+        String inputText,
+                inputKey;
         int[] textInt;
-        char[] text;
-        char[] arr;
-        char[] key;
-        int i = 0;
-        int j = 0;
-        int a = 0;
+        char[] text,
+                arr,
+                key;
+        int i = 0,
+                j = 0,
+                a = 0;
         while (i == 0) {
             System.out.print("\nВведите сообщение для дешифровки: ");
-            inputText = scan.nextLine();
+            inputText = scan.nextLine() + ' ';
             arr = inputText.toCharArray();
             for (i = 0; i < inputText.length(); i++) {
                 if (arr[i] == ' ') {
@@ -33,22 +85,40 @@ public class project {
                     j++;
                 }
             }
+            i = 0;
             System.out.print("Введите ключ: ");
-            inputKey = scan.nextLine();
+            inputKey = scan.nextLine() + ' ';
             key = inputKey.toCharArray();
             if (textInt.length != inputKey.length()) {
                 System.out.println("\n\nОШИБКА! Введена последовательность неверной длинны ИЛИ последовательность введена неправильно!\nДлинна ключа отличается от введённого сообщения на " + (inputKey.length() - textInt.length) + "\n");
             } else {
-                System.out.print("Ваше зашифрованное сообщение: ");
+                System.out.print("Ваше дешифрованное сообщение: ");
                 for (i = 0; i < text.length; i++) {
-                    System.out.println(text[i]);
-                    System.out.println(key[i]);
                     System.out.print((char) (text[i] ^ key[i]));
                 }
                 i = 1;
             }
         }
-        System.out.print("");
+    }
+
+    public static void decryptionMenu() {
+        Scanner scan = new Scanner(System.in);
+        int i = 1;
+        while (i == 1) {
+            System.out.print("\nВыберите тип ввода данных: \n1) Вручную(\\man)\n2) Считать с файла(\\read)\nВвод команды: ");
+            String ans = scan.nextLine();
+            switch (ans) {
+                case ("\\man") -> {
+                    i = 0;
+                    decryptionManually();
+                }
+                case ("\\read") -> {
+                    i = 0;
+                    decryptionRead();
+                }
+                default -> System.out.print("\n\nОшибка! Неправильная команда. Попробуйте ввести команду ещё раз...");
+            }
+        }
     }
 
     public static char[] randomKey(int textLength) {
@@ -74,8 +144,8 @@ public class project {
         Scanner scan = new Scanner(System.in);
         System.out.print("\nВведите сообщение для зашифровки: ");
         String input = scan.nextLine();
-        char[] text = input.toCharArray();
-        char[] key;
+        char[] text = input.toCharArray(),
+                key;
         int i = 0;
         while (i != 1) {
             System.out.print("Введите '\\rand', чтобы получить случайный ключ ИЛИ введите свой ключ для зашифровки.\nЭто может быть любая последовательность латинских букв, знаков препинания и цифр, длинной " + input.length() + ": ");
@@ -84,7 +154,7 @@ public class project {
                 key = randomKey(input.length());
             }
             if (input.length() != key.length) {
-                System.out.println("\n\nОШИБКА! Неправильная команда или введена последовательность неверной длинны!\nДлинна ключа отличается от введённого сообщения на " + (key.length - input.length()));
+                System.out.println("\nОШИБКА! Неправильная команда или введена последовательность неверной длинны!\nДлинна ключа отличается от введённого сообщения на " + (key.length - input.length()) + "\n");
             } else {
                 System.out.println("\nВаш ключ: " + new String(key));
                 File file = new File("results\\empty.txt");
@@ -105,6 +175,7 @@ public class project {
         }
         System.out.print("\n\nЖелаете сохранить файл с зашифрованным сообщением и ключом?\nВведите 'Yes' или 'No': ");
         input = scan.nextLine();
+        File file = new File("results\\empty.txt");
         if (!Objects.equals(input, "Да") & !Objects.equals(input, "Нет") & !Objects.equals(input, "да") & !Objects.equals(input, "нет") & !Objects.equals(input, "Yes") & !Objects.equals(input, "No") & !Objects.equals(input, "yes") & !Objects.equals(input, "no")) {
             System.out.print("\nОШИБКА! Неправильная команда.\n\nПопробуйте ввести команду ещё раз: ");
         } else {
@@ -112,7 +183,6 @@ public class project {
                 while (i == 1) {
                     System.out.print("Введите название файла: ");
                     String name = scan.nextLine();
-                    File file = new File("results\\empty.txt");
                     File newFile = new File("results\\" + name + ".txt");
                     if (file.renameTo(newFile)) {
                         i = 0;
@@ -122,7 +192,9 @@ public class project {
                     }
                 }
             } else {
-                System.out.print("\nФайл не был создан");
+                if (file.delete()) {
+                    System.out.print("\nФайл не был создан");
+                }
             }
         }
     }
@@ -137,7 +209,7 @@ public class project {
             freeInput = scan.nextLine();
             switch (freeInput) {
                 case ("\\enc") -> encryption();
-                case ("\\dec") -> decryption();
+                case ("\\dec") -> decryptionMenu();
                 case ("\\exit") -> {
                     System.out.print("\nВыход...");
                     i = 1;
